@@ -1,28 +1,40 @@
 # ====================================================================================================
 # DiskProfiledPlane class options
 # ====================================================================================================
-DiskProfiledPlane.use_electrode         = true          # Turn on/off electrode
-DiskProfiledPlane.use_dielectric        = true          # Turn on/off dielectric
 
-DiskProfiledPlane.wheel_live            = true          # Live electrode or not
-DiskProfiledPlane.wheel_radius          = 1             # Wheel radius
-DiskProfiledPlane.wheel_center          = 0 0 0         # Wheel center
-DiskProfiledPlane.wheel_curvature       = 0.1           # Wheel curvature (thickness)
-DiskProfiledPlane.wheel_stem_radius     = 0.01          # Wheel stem radius (< 0 => turn off this part)
-DiskProfiledPlane.wheel_smooth          = 1E-3          # Smoothing distance for CSG union
-DiskProfiledPlane.wheel_extra_thickness = 0.0           # Extra wheel thickness
+DiskProfiledPlane.use_electrode         = true                    # Turn on/off electrode
+DiskProfiledPlane.use_dielectric        = true                    # Turn on/off dielectric
 
-DiskProfiledPlane.box_dimensions        = 1 1 1         # Box dimensions
-DiskProfiledPlane.box_translate         = 0 0 0         # Box translation
-DiskProfiledPlane.box_permittivity      = 1.0           # Dielectric box permittivity
-DiskProfiledPlane.box_curvature         = 1             # Corner curvatures
+DiskProfiledPlane.wheel_live            = true                    # Live electrode or not
+DiskProfiledPlane.wheel_radius          = 5E-2                    # Wheel radius
+DiskProfiledPlane.wheel_center          = 0 5.75E-2 0             # Wheel center
+DiskProfiledPlane.wheel_curvature       = 500E-6                  # Wheel curvature (thickness)
+DiskProfiledPlane.wheel_stem_radius     = -1.0                    # Wheel stem radius (< 0 => turn off this part)
+DiskProfiledPlane.wheel_smooth          = 1E-3                    # Smoothing distance for CSG union
+DiskProfiledPlane.wheel_extra_thickness = 0.0                     # Extra wheel thickness
 
-DiskProfiledPlane.profile_type          = none          # Profile type. 'square', 'sphere', 'cylinder_d' with d = 'x/y/z'
-DiskProfiledPlane.profile_translate     = 0 0 0         # Profile translation
-DiskProfiledPlane.profile_repetition_lo = 0 0 0         # Repetition pattern in low coordinate direction
-DiskProfiledPlane.profile_repetition_hi = 0 0 0         # Repetition pattern in high coordinate direction
-DiskProfiledPlane.profile_period        = 1 1 1         # Repetition period
+DiskProfiledPlane.box_dimensions        = 7.2000123E-2 0.020012 1 # Box dimensions
+DiskProfiledPlane.box_translate         = 0.00E-3 5.0123E-3 0     # Box translation
+DiskProfiledPlane.box_permittivity      = 3.3                     # Dielectric box permittivity
+DiskProfiledPlane.box_curvature         = 100E-6                  # Corner curvatures
 
-DiskProfiledPlane.square_dimensions     = 1 1 1         # Dimensions for squares/square channels
-DiskProfiledPlane.sphere_radius         = 1             # Radius for sphere profiles
-DiskProfiledPlane.cylinder_radius       = 1             # Radius for cylinder profiles
+DiskProfiledPlane.profile_type          = none                    # Profile type. 'square', 'sphere', 'cylinder_d' with d = 'x/y/z', "lshape", "golfpeg"
+DiskProfiledPlane.profile_translate_lo  = -0.3E-3 0.0E-3 0        # Profile translation in low coordinate direction
+DiskProfiledPlane.profile_translate_hi  = 0.675E-3 0.0E-3 0       # Profile translation in high coordinate direction
+DiskProfiledPlane.profile_repetition_lo = 0 0 0                   # Repetition pattern in low coordinate direction
+DiskProfiledPlane.profile_repetition_hi = 0 0 0                   # Repetition pattern in high coordinate direction
+DiskProfiledPlane.reflect_lo 			= true                    # mirror profile about y axis at x = 0
+DiskProfiledPlane.reflect_hi	        = true                    # mirror profile about y axis at x = 0
+DiskProfiledPlane.profile_period        = 1.05001E-3 1 1          # Repetition period 
+
+DiskProfiledPlane.square_dimensions     = 0E-6 0E-6 10            # Dimensions for squares/square channels
+DiskProfiledPlane.lshape_dimensions     = 799E-6 999E-6 10        # Main dimensions for l_shape channels
+DiskProfiledPlane.lshape_cut_angle      = 0.185353                # l_shape top cut angle in radians (cut plane from upper corner)
+DiskProfiledPlane.sphere_radius         = 300E-6                  # Radius for sphere profiles
+DiskProfiledPlane.cylinder_radius       = 1E-3                    # Radius for cylinder profiles
+																  
+DiskProfiledPlane.golfpeg_radius        = 299E-6                  # Golfpeg top ball radius
+DiskProfiledPlane.golfpeg_length        = 999E-6                  # golfpeg length
+DiskProfiledPlane.golfpeg_width         = 149E-6                  # golfpeg width
+DiskProfiledPlane.golfpeg_curvature1    = 199E-6                  # Peg upper curvature (where it meets the ball)
+DiskProfiledPlane.golfpeg_curvature2    = 299E-6                  # Peg lower curvature (where it meets the box)

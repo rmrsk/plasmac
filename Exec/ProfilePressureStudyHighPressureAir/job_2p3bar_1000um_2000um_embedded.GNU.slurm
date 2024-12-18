@@ -1,0 +1,45 @@
+#!/bin/bash
+#SBATCH --account=nn9887k
+#SBATCH --job-name=hsquare_2p3bar_1000um_2000um_embedded
+#SBATCH --time=0-06:00:00
+#SBATCH --nodes=8
+#SBATCH --ntasks-per-node=128
+
+
+
+## Safety settings, I don't know why this is recommended in the documentation but fine
+set -o errexit
+set -o nounset
+
+## Software modules
+module restore system
+module load foss/2023a
+module load HDF5/1.14.0-gompi-2023a
+
+# Program to run and input script
+executable=program2d.Linux.64.mpic++.gfortran.OPTHIGH.MPI.ex
+
+# Input file
+input_file=myplasmamodel_square_2p3bar_1000um_2000um_embedded.inputs
+chemistry_file=chemistry.json
+bolsig_file=transport_data.dat
+
+# Create directory, copy executable and input script
+workdir=$USERWORK/$SLURM_JOB_NAME
+if [ ! -d $workdir ]; then mkdir -p $workdir; fi
+
+# Only pout.0
+export CH_OUTPUT_INTERVAL=9999999
+
+# Lustre striping
+lfs setstripe --stripe-count 4 --stripe-size 32M $workdir
+
+# Copy executables to work directory
+cp -f $executable $workdir/$executable
+cp -f $input_file $workdir/$input_file
+cp -f $chemistry_file  $workdir/$chemistry_file
+cp -f $bolsig_file  $workdir/$bolsig_file
+
+# Navigate to directory and run
+cd $workdir
+mpirun ./$executable $input_file

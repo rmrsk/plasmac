@@ -1,0 +1,412 @@
+{
+    "gas" : {
+	// Definition of the background gas. This must contain "background species" and "law".
+	"background species" : [
+	    // Definition of background species. This is an array of species with specified molar fractions. Species names
+	    // can not contain wildcards (@)
+	    {
+		"id": "O2",              // Species ID
+		"molar fraction" : {     // Specification of how we compute the molar fraction
+		    "type" : "constant", // Constant molar fraction
+		    "value" : 0.2        // Molar fraction value
+		},
+		"plot" : true            // Specify that we plot the species' molar fraction
+	    },
+	    {
+		"id" : "N2",                            // Species ID
+		"molar fraction" : {                    // Specification of how we compute the molar fraction
+		    "type" : "table vs height",         // Specify table vs height
+		    "file" : "N2_molar_fraction.dat",   // File name containing molar fraction
+		    //"dump" : "debug_N2_fraction.dat", // Optional debugging hook for dumping table to file (defaults to false)		    
+		    "axis" : "y",                       // Axis which represents the "height"
+		    "height column" : 0,                // Optional specification of column containing the height data (defaults to 0)
+		    "molar fraction column" : 1,        // Optional specification of column containing the height data (defaults to 1)
+		    "height scale" : 1.0,               // Optional scaling of height column
+		    "fraction scale" : 1.0,             // Optional scaling of molar fraction column
+		    "min height" : 0.0,                 // Optional truncation of minimum height kept in internal table (occurs after scaling)
+		    "max height" : 2.0,                 // Optional truncation of maximum height kept in internal table (occurs after scaling)
+		    "num points" : 100,                 // Optional specification of number of data points kept in internal table (defaults to 1000)
+		    "spacing" : "linear"                // Optional specification of table representation. Can be 'linear' or 'exponential' (defaults to linear)
+		},
+		"plot" : false                          // Will not plot the molar fraction for this species
+	    }
+	],
+	// Specify which gas law we use. The user can define multiple gas laws and then later specify which one to use.
+	"law" : {
+	    "id" : "my_ideal_gas", // Specify which gas law we use.
+	    "plot" : true,         // Turn on/off plotting.
+	    "my_ideal_gas" : {
+		// Definition for an ideal gas law. Temperature is always in Kevlin the pressure is in bar. The neutral density
+		// is derived using an ideal gas law.
+		"type" : "ideal",
+		"temperature" : 300,
+		"pressure" : 2.3
+	    },
+	    "tabulated atmosphere" : {
+		// Tabulated gas law. The user must supply a file containing the pressure, temperature and number density and
+		// specify the table resolution that will be used internally.
+		"type" : "table vs height",       // Specify that our gas law contains table-vs-height data
+		"file" : "ENMSIS_Atmosphere.dat", // File name
+		"axis" : "y",                     // Associated Cartesian axis for the "height"
+		"temperature column" : 0,         // Column containing the temperature
+		"pressure column" : 1,            // Column containing the pressure
+		"density column" : 2,             // Column containing the number density
+		"min height" : 0.0,               // Minium height kept when resampling the table
+		"max height" : 250000,            // Maximum height kept when resampling the table
+		"res height" : 500,               // Table resolution
+		"dump tables" : false,            // Optional argument for dumping tables to disk (useful for debugging)
+		"T scale" : 1.0,                  // Optional argument for user-specified temperature data scaling.
+		"P scale" : 1.0,                  // Optional argument for user-specified pressure data scaling.
+		"Rho scale" : 1.0                 // Optional argument for user-specified density data scaling.
+	    }
+	}
+    },
+    "alpha": {
+	// Definition of the alpha coefficient. This can be done by specifying the 'type' field
+	// as 'constant' or 'table alpha/N vs E/N'. If you use 'constant', then only the 'value' field is required
+	// for complete Tabulated coefficients are bit more involved, and are fully specified below. Note that
+	// if do not specify the "header" field, then the full file is read in (ignoring any # comments). If you
+	// read from e.g. BOLSIG+ outputs, then you will probably need to include the header to ensure you obtain
+	// data from the correct place in the file.
+	"type" : "table vs E/N",                                   // Specify that we read in alpha/N vs E/N
+	"file" : "bolsig_air.dat",                                 // File containing the data
+	//"dump" : "debug_alpha.dat",                              // Optional dump of internalized table to file. Useful for debugging.	
+	"header" : "E/N (Td)\tTownsend ioniz. coef. alpha/N (m2)", // Optional argument. Contains line immediately preceding the data to be read.
+	"E/N column" : 0,                                          // Optional specification of column containing E/N (defaults to 0)
+	"alpha/N column" : 1,                                      // Optional specification of column containing alpha/N (defaults to 1)
+	"min E/N" : 1.0,                                           // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	"max E/N" : 1000.0,                                        // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	"num points" : 1000,                                       // Optional number of points kept when resamplnig the table (defaults to 1000)
+	"spacing" : "exponential",                                 // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	"scale E/N" : 1.0,                                         // Optional scaling of the column containing E/N
+	"scale alpha/N" : 1.0                                      // Optional scaling
+    },
+    "eta" : {
+	// Definition of the Townsend attachment coefficient. Follows the same terminology as the Townsend ionization coefficient.
+	"type" : "table vs E/N",                                  // Specify that we read in alpha/N vs E/N
+	"file" : "bolsig_air.dat",                                // File containing the data
+	//"dump" : "debug_eta.dat",                               // Optional dump of internalized table to file. Useful for debugging.	
+	"header" : "E/N (Td)\tTownsend attach. coef. eta/N (m2)", // Optional argument. Contains the line immediately preceding the data to be read.
+	"E/N column" : 0,                                         // Optional specification of column containing E/N (defaults to 0)
+	"eta/N column" : 1,                                       // Optional specification of column containing eta/N (defaults to 1)
+	"min E/N" : 1.0,                                          // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	"max E/N" : 1000.0,                                       // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	"num points" : 1000,                                      // Optional number of points kept when resamplnig the table (defaults to 1000)
+	"spacing" : "exponential",                                // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	"scale E/N" : 1.0,                                        // Optional scaling of the column containing E/N
+	"scale eta/N" : 1.0                                       // Optional scaling
+    },
+    "plasma species" :
+    [
+	// List of plasma species that are tracked. This is an array of species
+	// with various identifiers, some of which are always required (id, Z, type, mobile, diffusive) and
+	// others which are secondary requirements.
+	{
+            "id": "e",          // Species ID
+	    "Z" : -1,           // Charge number
+	    "solver" : "ito",   // Solver type. Either 'ito' or 'cdr'
+	    "mobile" : true,    // Mobile or not
+	    "diffusive" : true, // Diffusive or not
+	    "mobility" : {
+		// Specification of the mobilility coefficient when the species is mobile. User can specify various forms of the mobility. E.g. constant, function-based, or
+		// tabulated vs E/N
+		"type" : "table vs E/N",                      // Specification of tabulated mobility lookup method
+		"file" : "bolsig_air.dat",                    // File containg the mobility data
+		//"dump" : "debug_mobility.dat",              // Optional argument for dumping table to disk (useful for debugging)		
+		"header" : "E/N (Td)\tMobility *N (1/m/V/s)", // Line immediately preceding the colum data
+		"E/N" : 0,                                    // Column containing E/N
+		"mu*N" : 1,                                   // Column containing mu*N
+		"min E/N" : 1,                                // Minimum E/N kept when resampling table
+		"max E/N" : 2E6,                              // Maximum E/N kept when resampling table
+		"points" : 1000,                              // Number of grid points kept when resampling the table
+		"spacing" : "exponential",                    // Grid point spacing when resampling the table
+		"E/N scale" : 1.0,                            // Optional argument for scaling mobility coefficient
+		"mu*N scale" : 1.0                            // Optional argument for scaling the E/N column
+	    },
+	    "diffusion" : {
+		// Definition of the diffusion coefficient similiar to mobility coefficient above.
+		"type" : "table vs E/N",
+		"file" : "bolsig_air.dat",
+		//"dump": "debug_diffusion.dat",		
+		"header" : "E/N (Td)\tDiffusion coefficient *N (1/m/s)",
+		"E/N" : 0,
+		"D*N" : 1,
+		"min E/N" : 10,
+		"max E/N" : 2E6,
+		"spacing" : "exponential",
+		"points" : 1000
+	    },
+	    "temperature": {
+		// Definition of the temperature, similar to the mobility coefficient above.
+		"type": "table vs E/N",
+		"file": "bolsig_air.dat",
+		//"dump": "debug_temperature.dat",				
+		"header" : "E/N (Td)\tMean energy (eV)",
+		"E/N" : 0,
+		"eV" : 1,
+		"min E/N" : 10,
+		"max E/N" : 2E6,
+		"E/N scale": 1.0,
+		"eV scale": 1.0,
+		"spacing" : "exponential",
+		"points" : 1000
+	    },
+	    "initial particles" : [
+		// Example of how to initialize particles using various methods (manual placement, distributions, reading
+		// from disk. All these specification are incrementing (i.e., not overriding one another)
+		{
+		    // Specification of single computational particles.
+		    "single particle" : {         
+			"position" : [ 0, 0, 0 ], // Position is at (0,00)
+			"weight" : 1              // Physical particle with weight = 1
+		    }
+		},
+		{
+		    // Specification of initial particles sampled uniformly in space. This will distribute
+		    // the particles over the MPI rank. 
+		    "uniform distribution" : {
+			"low corner" : [ -0.04, 0, 0 ],    // Lower-left physical corner of sampling region
+			"high corner" : [ 0.04, 0.04, 0 ], // Upper-right physical corner of sampling region
+			"num particles": 1000,             // Number of computational particles
+			"weight" : 1                       // Particle weights
+		    } 
+		},
+		{
+		    // Specification of initial particles sampled uniformly inside of a sphere (circle in 2D). This 
+		    // will distribute the particles over the MPI rank. 			
+		    "sphere distribution" : {
+			"center" : [ -2.7E-2, 11.2E-3, 0 ], // Sphere center
+			"radius" : 3E-3,         // Sphere radius
+			"num particles": 500,     // Number computational particles
+			"weight" : 1            // Particle weights
+		    }
+		},
+		{
+		    // Specification of initial particles sampled from a Gaussian distribution. This
+		    // will distribute the particles over the MPI rank. 						
+		    "gaussian distribution" : {
+			"center" : [ 0, 0, 0 ], // Center of the gaussian distribution
+			"radius" : 1.0,         // Gaussian radius
+			"num particles": 100,   // Number of computational particles
+			"weight" : 1            // Particle weights
+		    }
+		},
+		{
+		    // Specification of initial particles read from an input list. This
+		    // will put all the particles on the master MPI rank. 
+		    "list": {
+			"file": "initial_particles.dat", // File containing the particles
+			"x column": 0,                   // Optional specification of column containing x coordinate (defaults to 0)
+			"y column": 1,                   // Optional specification of column containing y coordinate (defaults to 1)
+			"z column": 2,                   // Optional specification of column containing z coordinate (defaults to 2)
+			"w column": 3                    // Optional specification of column containing the particle weight (defaults to 3)
+		    }
+		}
+	    ]
+        },
+	{
+	    // Definition of O2+ plasma species.
+            "id": "O2+",            // Species ID
+	    "Z" : 1,                // Charge number
+	    "solver" : "cdr",       // Solver type. Either 'ito' or 'cdr'
+	    "mobile" : true,       // Mobile or not
+	    "diffusive" : false,    // Diffusive or not
+	    "mobility": {           // Specification of the mobility
+		"type": "constant", // Mobility is constant 
+		"value": 2E-4       // Mobility value is 2E-4
+	    },
+	    "diffusion": {          // Specification of diffusion coefficient
+		"type": "constant", // Diffusion coefficient is constant
+		"value": 0.0        // Diffusion coefficient is 0.0
+	    }		
+	},
+	{
+	    // Definition of O- plasma species.
+            "id": "O-",            // Species ID
+	    "Z" : -1,               // Charge number
+	    "solver" : "cdr",       // Solver type. Either 'ito' or 'cdr'
+	    "mobile" : true,       // Mobile or not
+	    "diffusive" : false,    // Diffusive or not
+	    "mobility": {           // Specification of the mobility
+		"type": "constant", // Mobility is constant 
+		"value": 2E-4       // Mobility value is 2E-4
+	    },
+	    "diffusion": {          // Specification of diffusion coefficient
+		"type": "constant", // Diffusion coefficient is constant
+		"value": 0.0        // Diffusion coefficient is 0.0
+	    }		
+	},	
+	{
+	    // Definition of N2+ plasma species.
+	    "id": "N2+",            // Species ID
+	    "Z" : 1,                // Charge number
+	    "solver" : "cdr",       // Solver type. Either 'ito' or 'cdr'
+	    "mobile" : true,       // Mobile or not
+	    "diffusive" : false,    // Diffusive or not
+	    "mobility": {           // Specification of the mobility
+		"type": "constant", // Mobility is constant 
+		"value": 2E-4       // Mobility value is 2E-4
+	    },
+	    "diffusion": {          // Specification of diffusion coefficient
+		"type": "constant", // Diffusion coefficient is constant
+		"value": 0.0        // Diffusion coefficient is 0.0
+	    }				
+	},
+	
+	
+
+	{
+	    // Definition of 1PN2 plasma species (light emission).
+            "id": "1PN2",            // Species ID
+	    "Z" : 0,                // Charge number
+	    "solver" : "cdr",       // Solver type. Either 'ito' or 'cdr'
+	    "mobile" : false,       // Mobile or not
+	    "diffusive" : false,    // Diffusive or not
+	    "mobility": {           // Specification of the mobility
+		"type": "constant", // Mobility is constant 
+		"value": 2E-4       // Mobility value is 2E-4
+	    },
+	    "diffusion": {          // Specification of diffusion coefficient
+		"type": "constant", // Diffusion coefficient is constant
+		"value": 0.0        // Diffusion coefficient is 0.0
+	    }		
+	}
+	
+
+    ],
+    "photon species":
+    [
+	// List of photon species that are tracked. This is an array of species
+	// with required identifiers (id, kappa)
+	{
+	    "id": "Y",                  // Photon species id. Must be unique
+	    "kappa": {                  // Specification of absorption coefficient. 
+		"type": "stochastic A", // Specify 'stochastic A' model. See e.g., Pasko sprite paper
+		"f1":   2.925E15,       // Lower frequency
+		"f2":   3.059E15,       // Upper frequency
+		"chi min": 2.625E-2,    // Minimum coefficient
+		"chi max": 1.5,         // Maximum coefficient
+		"neutral": "O2"         // Partial pressure of neutral that is involved. 
+	    }
+	}
+    ],
+    "plasma reactions":
+    [
+	// List of plasma reactions. The left hand side can consist of plasma and background species, and the
+	// right-hand side can additionally consist of photon species. Rates that are added should be equivalent
+	// to the conventional rate used in the deterministic reaction rate equation, i.e. the conventional fluid
+	// rate. The "plot" variable permits the user to plot the input rate as a function of E(x). Note that
+	// Because the rates KMC and RRE equations differ, an internal modification is made between the
+	// input rate in the reaction and the treament in the KMC algorithm (e.g., volume modifications due to
+	// biparticle reactions, or scaling for reactions involving the same species).
+	{
+	    // Tabulated reaction rate for e + N2 -> e + e + N2+
+	    "reaction": "e + N2 -> e + e + N2+",             // Reaction. Must contain the '->'
+	    "description": "Rate/N2 ionization",             // Optional description of the reaction. Used when plotting the rate
+	    "type": "table vs E/N",                          // Specification of reaction rate type
+	    "file" : "bolsig_air.dat",                       // File containing the data
+	    "header" : "C25   N2    Ionization    15.60 eV", // Header line preceding data
+	    "E/N column" : 0,                                // Optional specification of column containing E/N (defaults to 0)
+	    "rate/N column" : 1,                             // Optional specification of column containing alpha/N (defaults to 1)
+	    "min E/N" : 1.0,                                 // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	    "max E/N" : 1000.0,                              // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	    "num points" : 1000,                             // Optional number of points kept when resamplnig the table (defaults to 1000)
+	    "spacing" : "exponential",                       // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	    "scale E/N" : 1.0,                               // Optional scaling of the column containing E/N
+	    "scale rate/N" : 1.0,                            // Optional scaling of the column containing rate/E
+	    //"dump" : "debug_r1.dat",                       // Optional dump of internalized table to file. Useful for debugging.
+            "gradient correction": "e",                      // Use gradient correction to rate
+	    "plot": true                                     // Optional. If true, the reaction rate will be plotted.
+	},
+	{
+	    // Tabulated reaction rate for e + O2 -> e + e + O2+	    
+	    "reaction": "e + O2 -> e + e + O2+",             // Reaction. Must contain the '->'
+	    "description": "Rate/O2 ionization",             // Optional description of the reaction. Used when plotting the rate
+	    "type": "table vs E/N",                          // Specification of reaction rate type
+	    "file" : "bolsig_air.dat",                       // File containing the data
+	    "header" : "C42   O2    Ionization    12.06 eV", // Header line preceding data
+	    "E/N column" : 0,                                // Optional specification of column containing E/N (defaults to 0)
+	    "rate/N column" : 1,                             // Optional specification of column containing alpha/N (defaults to 1)
+	    "min E/N" : 1.0,                                 // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	    "max E/N" : 1000.0,                              // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	    "num points" : 1000,                             // Optional number of points kept when resamplnig the table (defaults to 1000)
+	    "spacing" : "exponential",                       // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	    "scale E/N" : 1.0,                               // Optional scaling of the column containing E/N
+	    "scale rate/N" : 1.0,                            // Optional scaling of the column containing rate/E
+	    //"dump" : "debug_r2.dat",                       // Optional dump of internalized table to file. Useful for debugging.
+            "gradient correction": "e",                      // Use gradient correction to rate
+	    "plot": true                                     // Optional. If true, the reaction rate will be plotted.
+	},
+	{
+	    // Tabulated reaction rate for e + O2 -> O + O-
+	    "reaction": "e + O2 -> (O) + O-",         // Reaction. Must contain the '->'
+	    "description": "Rate/O2 attachment", // Optional description of the reaction. Used when plotting the rate
+	    "type": "table vs E/N",              // Specification of reaction rate type
+	    "file" : "bolsig_air.dat",           // File containing the data
+	    "header" : "C27   O2    Attachment", // Header line preceding data
+	    "E/N column" : 0,                    // Optional specification of column containing E/N (defaults to 0)
+	    "rate/N column" : 1,                 // Optional specification of column containing alpha/N (defaults to 1)
+	    "min E/N" : 1.0,                     // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	    "max E/N" : 1000.0,                  // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	    "num points" : 1000,                 // Optional number of points kept when resamplnig the table (defaults to 1000)
+	    "spacing" : "exponential",           // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	    "scale E/N" : 1.0,                   // Optional scaling of the column containing E/N
+	    "scale rate/N" : 1.0,                // Optional scaling of the column containing rate/E
+	    //"dump" : "debug_r3.dat",           // Optional dump of internalized table to file. Useful for debugging.
+            "gradient correction": "e",          // Use gradient correction to rate
+	    "plot": true                         // Optional. If true, the reaction rate will be plotted.
+	},	
+	{
+	    // Tabulated reaction rate for e + N2 -> e + Y + N2
+	    "reaction": "e + N2 -> e + Y + (N2)",            // Reaction. Must contain the '->'
+	    "description": "Rate/Photon generation",         // Optional description of the reaction. Used when plotting the rate
+	    "type": "table vs E/N",                          // Specification of reaction rate type
+	    "file" : "bolsig_air.dat",                       // File containing the data
+	    "header" : "C25   N2    Ionization    15.60 eV", // Header line preceding data
+	    "E/N column" : 0,                                // Optional specification of column containing E/N (defaults to 0)
+	    "rate/N column" : 1,                             // Optional specification of column containing alpha/N (defaults to 1)
+	    "min E/N" : 1.0,                                 // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	    "max E/N" : 1000.0,                              // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	    "num points" : 1000,                             // Optional number of points kept when resamplnig the table (defaults to 1000)
+	    "spacing" : "exponential",                       // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	    "scale E/N" : 1.0,                               // Optional scaling of the column containing E/N
+	    "scale rate/N" : 1.0,                            // Optional scaling of the column containing rate/E
+	    //"dump" : "debug_r4.dat",                       // Optional dump of internalized table to file. Useful for debugging.
+            "gradient correction": "e",                      // Use gradient correction to rate
+	    "plot": true,                                    // Optional. If true, the reaction rate will be plotted.
+	    "efficiency": 0.06,                              // Reaction efficiency, assuming the number of photoionization events per ionization event
+	    "quenching pressure": 4000.0                     // Pressure quenching for collisional de-excitation (plus predissociation) of excited N2.
+	},
+	
+	{
+	    // Tabulated reaction rate for e + N2 -> e + Y + N2
+	    "reaction": "e + N2 -> e + 1PN2",            // Reaction. Must contain the '->'
+	    "description": "Rate/Photon generation",         // Optional description of the reaction. Used when plotting the rate
+	    "type": "table vs E/N",                          // Specification of reaction rate type
+	    "file" : "bolsig_air.dat",                       // File containing the data
+	    "header" : "C14   N2    Excitation    7.35 eV", // Header line preceding data
+	    "E/N column" : 0,                                // Optional specification of column containing E/N (defaults to 0)
+	    "rate/N column" : 1,                             // Optional specification of column containing alpha/N (defaults to 1)
+	    "min E/N" : 1.0,                                 // Optional truncation of minium E/N kept when resampling the table (occurs after scaling)
+	    "max E/N" : 1000.0,                              // Optional truncation of maximum E/N kept when resampling the table (happens after scaling)
+	    "num points" : 1000,                             // Optional number of points kept when resamplnig the table (defaults to 1000)
+	    "spacing" : "exponential",                       // Optional spcification of table representation. Defaults to 'exponential' but can also be 'linear'
+	    "scale E/N" : 1.0,                               // Optional scaling of the column containing E/N
+	    "scale rate/N" : 1.0,                            // Optional scaling of the column containing rate/E
+	    //"dump" : "debug_r4.dat",                       // Optional dump of internalized table to file. Useful for debugging.
+            "gradient correction": "e",                      // Use gradient correction to rate
+	    "plot": true,                                    // Optional. If true, the reaction rate will be plotted.
+	    "efficiency": 0.06,                              // Reaction efficiency, assuming the number of photoionization events per ionization event
+	    "quenching pressure": 4000.0                     // Pressure quenching for collisional de-excitation (plus predissociation) of excited N2.
+	}
+	
+
+    ],
+    "photoionization":
+    [
+	// List of photoionizing reactions. These must contain a reaction string (and possibly also an efficiency).
+	{
+	    "reaction": "Y + (O2) -> e + O2+"
+	}
+    ]
+}

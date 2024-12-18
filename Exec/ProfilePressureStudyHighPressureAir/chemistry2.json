@@ -1,0 +1,437 @@
+{
+    "gas" : {
+	"background species" : [
+	    {
+		"id": "O2",             
+		"molar fraction" : {    
+		    "type" : "constant",
+		    "value" : 0.2       
+		},
+		"plot" : false          
+	    },
+	    {
+		"id": "N2",             
+		"molar fraction" : {    
+		    "type" : "constant",
+		    "value" : 0.8
+		},
+		"plot" : false  
+	    }
+	],
+	"law" : {
+	    "id" : "ideal_gas", 
+	    "plot" : true,        
+	    "ideal_gas" : {
+		"type" : "ideal",
+		"temperature" : 300,
+		"pressure" : 1.0
+	    }
+	}
+    },
+    "alpha": {
+	"type": "table vs E/N",
+	"file": "transport_data2.dat",
+	"dump": "debug_alpha.dat",  		
+	"E/N column" : 0,             
+	"alpha/N column" : 11,            
+	"min E/N" : 10,               
+	"max E/N" : 1E6,              
+	"points" : 1000,              
+	"spacing" : "exponential",    
+	"scale E/N scale" : 1.0,            
+	"scale alpha/N" : 1.0
+    },
+    "eta": {
+	"type": "table vs E/N",
+	"file": "transport_data2.dat",
+	"dump": "debug_eta.dat",  		
+	"E/N column" : 0,             
+	"eta/N column" : 12,            
+	"min E/N" : 10,               
+	"max E/N" : 1E6,              
+	"points" : 1000,              
+	"spacing" : "exponential",    
+	"scale E/N" : 1.0,            
+	"scale eta/N" : 1.0
+    },
+    // "alpha": {
+    // 	"type": "auto",
+    // 	"species": "e"
+    // },
+    // "eta": {
+    // 	"type": "auto",
+    // 	"species": "e"
+    // },    
+    "plasma species" :
+    [
+	{
+            "id": "e",          
+	    "Z" : -1,           
+	    "solver" : "ito",   
+	    "mobile" : true,    
+	    "diffusive" : true, 
+	    "temperature": {
+		"type": "table vs E/N",
+		"file": "transport_data2.dat",
+		"dump": "debug_temperature.dat",								
+		"E/N column" : 0,
+		"eV column" : 1,
+		"min E/N" : 10,
+		"max E/N" : 1E6,
+		"E/N scale": 1.0,
+		"eV scale": 1.0,
+		"spacing" : "exponential",
+		"points" : 1000
+	    },	    
+	    "mobility" : {
+		"type" : "table vs E/N",      
+		"file" : "transport_data2.dat",
+		"dump": "debug_mobility.dat",  		
+		"E/N column" : 0,             
+		"mu*N column" : 2,            
+		"min E/N" : 10,               
+		"max E/N" : 1E6,              
+		"points" : 1000,              
+		"spacing" : "exponential",    
+		"E/N scale" : 1.0,            
+		"mu*N scale" : 1.0           
+	    },
+	    "diffusion" : {
+		"type" : "table vs E/N",
+		"file" : "transport_data2.dat",
+		"dump": "debug_diffusion.dat",						
+		"E/N column" : 0,
+		"D*N column" : 3,
+		"min E/N" : 10,
+		"max E/N" : 1E6,
+		"spacing" : "exponential",
+		"points" : 1000,
+		"E/N scale" : 1.0, 
+		"mu*N scale" : 1.0
+	    },
+	    "initial particles" : [
+		{
+		    "sphere distribution" : {
+			"center" : [ 0, 7.2E-3, 0 ],
+			"radius" : 1E-3,       
+			"num particles": 1000,  
+			"weight" : 1           
+		    }
+		}
+	    ]
+	},
+	{
+            "id": "e_low",          
+	    "Z" : -1,           
+	    "solver" : "ito",   
+	    "mobile" : true,    
+	    "diffusive" : true, 
+	    "temperature": {
+		"type": "table vs E/N",
+		"file": "transport_data2.dat",
+		"dump": "debug_temperature.dat",								
+		"E/N column" : 0,
+		"eV column" : 1,
+		"min E/N" : 10,
+		"max E/N" : 1E6,
+		"E/N scale": 1.0,
+		"eV scale": 1.0,
+		"spacing" : "exponential",
+		"points" : 1000
+	    },	    
+	    "mobility" : {
+		"type" : "table vs E/N",      
+		"file" : "transport_data2.dat",
+		"dump": "debug_mobility.dat",  		
+		"E/N column" : 0,             
+		"mu*N column" : 2,            
+		"min E/N" : 10,               
+		"max E/N" : 1E6,              
+		"points" : 1000,              
+		"spacing" : "exponential",    
+		"E/N scale" : 1.0,            
+		"mu*N scale" : 1.0           
+	    },
+	    "diffusion" : {
+		"type" : "table vs E/N",
+		"file" : "transport_data2.dat",
+		"dump": "debug_diffusion.dat",						
+		"E/N column" : 0,
+		"D*N column" : 3,
+		"min E/N" : 10,
+		"max E/N" : 1E6,
+		"spacing" : "exponential",
+		"points" : 1000,
+		"E/N scale" : 1.0, 
+		"mu*N scale" : 1.0
+	    }
+        },  
+	{
+	    "id": "N2+",            
+	    "Z" : 1,                
+	    "solver" : "cdr",       
+	    "mobile" : false,       
+	    "diffusive" : false,    
+	    "mobility": {           
+		"type": "constant", 
+		"value": 2E-4       
+	    },
+	    "diffusion": {          
+		"type": "constant", 
+		"value": 5.175E-6        
+	    }				
+	},	
+	{
+            "id": "O2+",            
+	    "Z" : 1,                
+	    "solver" : "cdr",       
+	    "mobile" : false,       
+	    "diffusive" : false,    
+	    "mobility": {           
+		"type": "constant", 
+		"value": 2E-4       
+	    },
+	    "diffusion": {          
+		"type": "constant", 
+		"value": 5.175E-6        
+	    }		
+	},
+	{
+            "id": "O2-",            
+	    "Z" : -1,               
+	    "solver" : "cdr",       
+	    "mobile" : false,       
+	    "diffusive" : false,    
+	    "mobility": {           
+		"type": "constant", 
+		"value": 2E-4       
+	    },
+	    "diffusion": {          
+		"type": "constant", 
+		"value": 5.175E-6        
+	    }		
+	},
+	{
+            "id": "O2-exc",            
+	    "Z" : -1,               
+	    "solver" : "cdr",       
+	    "mobile" : false,       
+	    "diffusive" : false,    
+	    "mobility": {           
+		"type": "constant", 
+		"value": 2E-4       
+	    },
+	    "diffusion": {          
+		"type": "constant", 
+		"value": 5.175E-6        
+	    }		
+	},
+	{
+            "id": "O-",            
+	    "Z" : -1,               
+	    "solver" : "cdr",       
+	    "mobile" : false,       
+	    "diffusive" : false,    
+	    "mobility": {           
+		"type": "constant", 
+		"value": 2E-4       
+	    },
+	    "diffusion": {          
+		"type": "constant", 
+		"value": 5.175E-6        
+	    }		
+	},
+	{ 
+            "id": "IR",            
+	    "Z" : 0,               
+	    "solver" : "ito",       
+	    "mobile" : false,       
+	    "diffusive" : false
+	},
+	{
+	    "id": "2PN2",
+	    "Z": 0,
+	    "solver": "cdr",
+	    "mobile": false,
+	    "diffusive": false
+	}	
+    ],
+    "photon species":
+    [
+	{
+	    "id": "Y",                  
+	    "kappa": {                  
+		"type": "stochastic B", 
+		"chi min": 2.625E-2,    
+		"chi max": 1.5,         
+		"neutral": "O2"         
+	    }
+	}
+    ],
+    "plasma reactions":
+    [
+	{
+	    "reaction": "e + N2 -> e + e_low + N2+",           
+	    "description": "N2 ionization",           
+	    "type": "table vs E/N",                        
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k1.dat",	    
+	    "E/N column" : 0,                              
+	    "rate/N column" : 4,                           
+	    "min E/N" : 10.0,                               
+	    "max E/N" : 10000.0,                            
+	    "num points" : 1000,                           
+	    "spacing" : "exponential",                     
+	    "scale E/N" : 1.0,                             
+	    "scale rate/N" : 1.0,                          
+//            "gradient correction": "e",                    
+	    "plot": false                                 	    
+	},
+	{
+	    "reaction": "e + O2 -> e + e_low + O2+",             
+	    "description": "O2 ionization",             
+	    "type": "table vs E/N",                          
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k2.dat",                       	    
+	    "E/N column" : 0,                                
+	    "rate/N column" : 5,                             
+	    "min E/N" : 10.0,                                 
+	    "max E/N" : 10000.0,                              
+	    "num points" : 1000,                             
+	    "spacing" : "exponential",                       
+	    "scale E/N" : 1.0,                               
+	    "scale rate/N" : 1.0,
+//            "gradient correction": "e",                    	    
+	    "plot": false                                  
+	},
+	{
+	    "reaction": "e + O2 -> O- + (O)",       
+	    "description": "Dissociative attachment", 
+	    "type": "table vs E/N",              
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k3.dat",     	    
+	    "E/N column" : 0,              
+	    "rate/N column" : 6,           
+	    "min E/N" : 10.0,               
+	    "max E/N" : 10000.0,            
+	    "num points" : 1000,           
+	    "spacing" : "exponential",     
+	    "scale E/N" : 1.0,             
+	    "scale rate/N" : 1.0,
+	    "plot": false                   
+	},
+	{
+	    "reaction": "e + O2 -> O2-exc", 
+	    "description": "O2 attachment", 
+	    "type": "table vs E/N",         
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k4.dat",	    
+	    "E/N column" : 0,          
+	    "rate/N column" : 7,       
+	    "min E/N" : 10.0,           
+	    "max E/N" : 10000.0,        
+	    "num points" : 1000,       
+	    "spacing" : "exponential", 
+	    "scale E/N" : 1.0,         
+	    "scale rate/N" : 1.0,      
+	    "plot": false     
+	},
+	{
+	    "reaction": "O2-exc -> e + (O2)", 
+	    "description": "Autodetachment", 
+	    "type": "table vs E/N",         
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k5.dat",	    
+	    "E/N column" : 0,          
+	    "rate/N column" : 8,       
+	    "min E/N" : 10.0,           
+	    "max E/N" : 10000.0,        
+	    "num points" : 1000,       
+	    "spacing" : "exponential", 
+	    "scale E/N" : 1.0,         
+	    "scale rate/N" : 1.0,      
+	    "plot": false     
+	},
+	{
+	    "reaction": "O2-exc + O2 -> O2- + (O2)", 
+	    "description": "O2- stabilization", 
+	    "type": "table vs E/N",         
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k6.dat",	    
+	    "E/N column" : 0,          
+	    "rate/N column" : 9,       
+	    "min E/N" : 10.0,           
+	    "max E/N" : 10000.0,        
+	    "num points" : 1000,       
+	    "spacing" : "exponential", 
+	    "scale E/N" : 1.0,         
+	    "scale rate/N" : 1.0,      
+	    "plot": false     
+	},
+	{
+	    "reaction": "e + N2 -> e + IR + (N2)",
+	    "description": "IR generation", 
+	    "type": "table vs E/N",        
+	    "file" : "transport_data2.dat",
+	    "dump": "debug_ir.dat",	    
+	    "E/N column" : 0,           
+	    "rate/N column" : 4,        
+	    "min E/N" : 10.0,           
+	    "max E/N" : 10000.0,        
+	    "num points" : 1000,        
+	    "spacing" : "exponential",  
+	    "scale E/N" : 1.0,          
+	    "scale rate/N" : 1.0,       
+            "gradient correction": "e", 
+	    "efficiency": 0.06,         
+	    "quenching pressure": 4000.0,
+	    "plot": false
+	},
+	{
+	    "reaction": "e_low -> e",
+	    "description": "Electron acceleration",
+	    "type": "constant",
+	    "value": 1E11,
+	    "plot": false
+	},
+	{
+	    "reaction": "IR -> Y + (N2)",
+	    "description": "Photon generation", 
+	    "type": "constant",
+	    "value": 2E8,
+	    "plot": false
+	},
+	{
+	    // Note: Quenching pressure is 2.76mbar but the quenching
+	    //       is due to O2 only, so it is scaled by the mole fraction
+	    //       of O2 to ensure correct pq/(pq + pO2) scaling. 
+	    "reaction": "e + N2 -> e + 2PN2",
+	    "description": "2PN2 excitation", 
+	    "type": "table vs E/N",         
+	    "file" : "transport_data2.dat",
+	    "dump" : "debug_k7.dat",	    
+	    "E/N column" : 0,          
+	    "rate/N column" : 10,       
+	    "min E/N" : 10.0,           
+	    "max E/N" : 10000.0,        
+	    "num points" : 1000,       
+	    "spacing" : "exponential", 
+	    "scale E/N" : 1.0,         
+	    "scale rate/N" : 1.0,
+	    "quenching pressure": 1380,
+	    "plot": false
+	},
+	{
+	    "reaction": "2PN2 -> (N2)",
+	    "description": "Optical emission", 
+	    "type": "constant",         
+	    "value" : 2E7
+	}	
+    ],
+    "photoionization":
+    [
+	{
+	    "reaction": "Y + (O2) -> e_low + O2+"
+	}
+    ]
+}

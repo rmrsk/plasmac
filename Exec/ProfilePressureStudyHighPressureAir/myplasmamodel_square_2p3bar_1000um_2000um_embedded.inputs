@@ -1,0 +1,343 @@
+# ====================================================================================================
+# Voltage curve
+# ====================================================================================================
+MyPlasmaModel.potential = -150E3
+#MyPlasmaModel.potential = -33.3E3
+MyPlasmaModel.basename  = pout
+
+# ====================================================================================================
+# AmrMesh class options
+# ====================================================================================================
+AmrMesh.lo_corner        = -4E-2 0    # Low corner of problem domain
+AmrMesh.hi_corner        = 4E-2 8E-2  1    # High corner of problem domain
+AmrMesh.verbosity        = -1          # Controls verbosity. 
+AmrMesh.coarsest_domain  = 128 128 128     # Number of cells on coarsest domain
+AmrMesh.max_amr_depth    = 10           # Maximum amr depth
+AmrMesh.max_sim_depth    = -1          # Maximum simulation depth
+AmrMesh.fill_ratio       = 1.0         # Fill ratio for grid generation
+AmrMesh.buffer_size      = 2           # Number of cells between grid levels
+AmrMesh.grid_algorithm   = tiled       # Berger-Rigoustous 'br' or 'tiled' for the tiled algorithm
+AmrMesh.box_sorting      = morton      # 'none', 'shuffle', 'morton'
+AmrMesh.blocking_factor  = 16          # Blocking factor. 
+AmrMesh.max_box_size     = 16          # Maximum allowed box size
+AmrMesh.max_ebis_box     = 16          # Maximum allowed box size for EBIS generation. 
+AmrMesh.ref_rat          = 2 2 2 2 2 2 2 2 2  # Refinement ratios (mixed ratios are allowed). 
+AmrMesh.num_ghost        = 2           # Number of ghost cells. 
+AmrMesh.lsf_ghost        = 2           # Number of ghost cells when writing level-set to grid
+AmrMesh.eb_ghost         = 2           # Set number of of ghost cells for EB stuff
+AmrMesh.mg_interp_order  = 2           # Multigrid interpolation order
+AmrMesh.mg_interp_radius = 2           # Multigrid interpolation radius
+AmrMesh.mg_interp_weight = 2           # Multigrid interpolation weight (for least squares)
+AmrMesh.centroid_sten    = linear      # Centroid interp stencils. 'pwl', 'linear', 'taylor, 'lsq'
+AmrMesh.eb_sten          = pwl         # EB interp stencils. 'pwl', 'linear', 'taylor, 'lsq'
+AmrMesh.redist_radius    = 1           # Redistribution radius for hyperbolic conservation laws
+
+
+
+# ====================================================================================================
+# Driver class options
+# ====================================================================================================
+Driver.verbosity                       = 1                # Engine verbosity
+Driver.geometry_generation             = chombo-discharge # Grid generation method, 'chombo-discharge' or 'chombo'
+Driver.geometry_scan_level             = 0                # Geometry scan level for chombo-discharge geometry generator
+Driver.ebis_memory_load_balance        = false            # If using Chombo geo-gen, use memory as loads for EBIS generation  
+Driver.output_dt                       = 1e-9             # Output interval (values <= 0 enforces step-based output)
+Driver.plot_interval                   = 10               # Plot interval
+Driver.checkpoint_interval             = 2000              # Checkpoint interval
+Driver.regrid_interval                 = 5               # Regrid interval
+Driver.write_regrid_files              = false            # Write regrid files or not.
+Driver.write_restart_files             = false            # Write restart files or not
+Driver.initial_regrids                 = 5                # Number of initial regrids
+Driver.do_init_load_balance            = false            # If true, load balance the first step in a fresh simulation.
+Driver.start_time                      = 0                # Start time (fresh simulations only)
+Driver.stop_time                       = 1.0              # Stop time
+Driver.max_steps                       = 100000              # Maximum number of steps
+Driver.geometry_only                   = false            # Special option that ONLY plots the geometry
+Driver.write_memory                    = false            # Write MPI memory report
+Driver.write_loads                     = false            # Write (accumulated) computational loads
+Driver.output_directory                = ./               # Output directory
+Driver.output_names                    = square           # Simulation output names
+Driver.max_plot_depth                  = -1               # Restrict maximum plot depth (-1 => finest simulation level)
+Driver.max_chk_depth                   = -1               # Restrict chechkpoint depth (-1 => finest simulation level)	
+Driver.num_plot_ghost                  = 1                # Number of ghost cells to include in plots
+Driver.plt_vars                        = levelset         # 'tags', 'mpi_rank', 'levelset', 'loads'
+Driver.restart                         = 0                # Restart step (less or equal to 0 implies fresh simulation)
+Driver.allow_coarsening                = true             # Allows removal of grid levels according to CellTagger
+Driver.grow_geo_tags                   = 2                # How much to grow tags when using geometry-based refinement. 
+Driver.refine_angles                   = 60.              # Refine cells if angle between elements exceed this value.
+Driver.refine_electrodes               = 0                # Refine electrode surfaces. -1 => equal to refine_geometry
+Driver.refine_dielectrics              = 0                # Refine dielectric surfaces. -1 => equal to refine_geometry
+
+
+# ====================================================================================================
+# CdrCTU solver settings. 
+# ====================================================================================================
+CdrCTU.bc.x.lo              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.bc.x.hi              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.bc.y.lo              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.bc.y.hi              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.bc.z.lo              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.bc.z.hi              = wall                    # 'data', 'function', 'wall', 'outflow', or 'solver'
+CdrCTU.slope_limiter        = minmod                  # Slope limiter. 'none', 'minmod', 'mc', or 'superbee'
+CdrCTU.use_ctu              = true                    # If true, use CTU. Otherwise it's DTU.
+CdrCTU.plt_vars             = phi vel src dco ebflux  # Plot variables. Options are 'phi', 'vel', 'dco', 'src'
+CdrCTU.plot_mode            = density                 # Plot densities 'density' or particle numbers ('numbers')
+CdrCTU.blend_conservation   = true                    # Turn on/off blending with nonconservative divergenceo
+CdrCTU.which_redistribution = volume                  # Redistribution type. 'volume', 'mass', or 'none' (turned off)
+CdrCTU.use_regrid_slopes    = true                    # Turn on/off slopes when regridding
+CdrCTU.gmg_verbosity        = -1                      # GMG verbosity
+CdrCTU.gmg_pre_smooth       = 12                      # Number of relaxations in GMG downsweep
+CdrCTU.gmg_post_smooth      = 12                      # Number of relaxations in upsweep
+CdrCTU.gmg_bott_smooth      = 12                      # NUmber of relaxations before dropping to bottom solver
+CdrCTU.gmg_min_iter         = 5                       # Minimum number of iterations
+CdrCTU.gmg_max_iter         = 32                      # Maximum number of iterations
+CdrCTU.gmg_exit_tol         = 1.E-10                  # Residue tolerance
+CdrCTU.gmg_exit_hang        = 0.2                     # Solver hang
+CdrCTU.gmg_min_cells        = 16                      # Bottom drop
+CdrCTU.gmg_bottom_solver    = bicgstab                # Bottom solver type. Valid options are 'simple' and 'bicgstab'
+CdrCTU.gmg_cycle            = vcycle                  # Cycle type. Only 'vcycle' supported for now
+CdrCTU.gmg_smoother         = red_black               # Relaxation type. 'jacobi', 'multi_color', or 'red_black'
+
+
+
+# ====================================================================================================
+# FieldSolverMultigrid class options
+# ====================================================================================================
+FieldSolverMultigrid.verbosity         = 1                # Class verbosity
+FieldSolverMultigrid.jump_bc           = natural           # Jump BC type ('natural' or 'saturation_charge')
+FieldSolverMultigrid.bc.x.lo           = neumann 0.0       # Bc type (see docs)
+FieldSolverMultigrid.bc.x.hi           = neumann 0.0       # Bc type (see docs)
+FieldSolverMultigrid.bc.y.lo           = dirichlet 1.0     # Bc type (see docs)
+FieldSolverMultigrid.bc.y.hi           = neumann   0.0     # Bc type (see docs)
+FieldSolverMultigrid.bc.z.lo           = dirichlet 0.0     # Bc type (see docs)
+FieldSolverMultigrid.bc.z.hi           = dirichlet 0.0     # Bc type (see docs)
+FieldSolverMultigrid.plt_vars          = phi rho E perm         # Plot variables: 'phi', 'rho', 'E', 'res', 'perm', 'sigma', 'Esol'
+FieldSolverMultigrid.use_regrid_slopes = true              # Use slopes when regridding or not
+FieldSolverMultigrid.kappa_source      = true              # Volume weighted space charge density or not (depends on algorithm)
+FieldSolverMultigrid.filter_rho        = 0                 # Number of filterings of space charge before Poisson solve
+FieldSolverMultigrid.filter_potential  = 0                 # Number of filterings of potential after Poisson solve
+FieldSolverMultigrid.bc_order 	       = 1
+
+FieldSolverMultigrid.gmg_verbosity     = 10                # GMG verbosity
+FieldSolverMultigrid.gmg_pre_smooth    = 40                # Number of relaxations in downsweep
+FieldSolverMultigrid.gmg_post_smooth   = 40                # Number of relaxations in upsweep
+FieldSolverMultigrid.gmg_bott_smooth   = 40                # Number of at bottom level (before dropping to bottom solver)
+FieldSolverMultigrid.gmg_min_iter      = 5                # Minimum number of iterations
+FieldSolverMultigrid.gmg_max_iter      = 32                # Maximum number of iterations
+FieldSolverMultigrid.gmg_exit_tol      = 1.E-10            # Residue tolerance
+FieldSolverMultigrid.gmg_exit_hang     = 0.2               # Solver hang
+FieldSolverMultigrid.gmg_min_cells     = 8                  # Bottom drop
+FieldSolverMultigrid.gmg_drop_order    = 64                 # Drop stencil order to 1 if domain is coarser than this.
+FieldSolverMultigrid.gmg_bc_order      = 2                 # Boundary condition order for multigrid
+FieldSolverMultigrid.gmg_bc_weight     = 1                 # Boundary condition weights (for least squares)
+FieldSolverMultigrid.gmg_jump_order    = 2                 # Boundary condition order for jump conditions
+FieldSolverMultigrid.gmg_jump_weight   = 1                 # Boundary condition weight for jump conditions (for least squares)
+FieldSolverMultigrid.gmg_bottom_solver = simple 128         # Bottom solver type. 'simple 32', 'bicgstab', or 'gmres'
+FieldSolverMultigrid.gmg_cycle         = vcycle            # Cycle type. Only 'vcycle' supported for now. 
+FieldSolverMultigrid.gmg_smoother      = red_black         # Relaxation type. 'jacobi', 'multi_color', or 'red_black'
+
+
+# ====================================================================================================
+# ItoSolver class options
+# ====================================================================================================
+ItoSolver.verbosity           = -1            # Class verbosity
+ItoSolver.merge_algorithm     = reinitialize  # Particle merging algorithm (see documentation), 'equal_weight_kd' or 'reinitialize'
+ItoSolver.plt_vars            = phi mu vel dco   # 'phi', 'vel', 'dco', 'part', 'eb_part', 'dom_part', 'src_part', 'energy_density', 'energy'
+ItoSolver.intersection_alg    = bisection     # Intersection algorithm for EB-particle intersections.
+ItoSolver.bisect_step         = 1.E-4         # Bisection step length for intersection tests
+ItoSolver.normal_max          = 5.0           # Maximum value (absolute) that can be drawn from the exponential distribution.
+ItoSolver.redistribute        = false         # Turn on/off redistribution. 
+ItoSolver.blend_conservation  = false         # Turn on/off blending with nonconservative divergenceo
+ItoSolver.checkpointing       = particles     # 'particles' or 'numbers'
+ItoSolver.ppc_restart         = 32            # Maximum number of computational particles to generate for restarts.
+ItoSolver.irr_ngp_deposition  = false          # Force irregular deposition in cut cells or not
+ItoSolver.irr_ngp_interp      = true          # Force irregular interpolation in cut cells or not
+ItoSolver.mobility_interp     = direct        # How to interpolate mobility, 'direct' or 'velocity', i.e. either mu_p = mu(X_p) or mu_p = (mu*E)(X_p)/E(X_p)
+ItoSolver.plot_deposition     = cic           # Cloud-in-cell for plotting particles.
+ItoSolver.deposition          = cic           # Deposition type. 
+ItoSolver.deposition_cf       = halo          # Coarse-fine deposition. interp, halo, or halo_ngp
+
+# ====================================================================================================
+# SurfaceODESolver solver settings. 
+# ====================================================================================================
+SurfaceODESolver.verbosity = -1                # Chattiness
+SurfaceODESolver.regrid    = conservative      # Regrid method. 'conservative' or 'arithmetic'
+SurfaceODESolver.plt_vars  = phi               # Plot variables. Valid arguments are 'phi' and 'rhs'
+
+
+# ====================================================================================================
+# McPhoto class options
+# ====================================================================================================
+McPhoto.verbosity          = -1            # Solver verbosity
+McPhoto.instantaneous      = true          # Instantaneous transport or not
+McPhoto.max_photons_per_cell        = 1             # Maximum no. generated in a cell (< = 0 yields physical photons)
+McPhoto.num_sampling_packets = 1 ## Number of sub-sampling packets for max_photons_per_cell
+McPhoto.blend_conservation = false         # Switch for blending with the nonconservative divergence
+McPhoto.transparent_eb     = false         # Turn on/off transparent boundaries. Only for instantaneous=true
+McPhoto.random_kappa       = true          # Randomize absorption length (taken from Photon implementation)
+McPhoto.plt_vars           = phi src_phot  # Available are 'phi' and 'src', 'phot', 'eb_phot', 'dom_phot', 'bulk_phot', 'src_phot'
+McPhoto.plot_deposition    = cic           # Cloud-in-cell for plotting particles. 
+McPhoto.intersection_alg   = raycast       # EB intersection algorithm. Supported are: 'raycast' 'bisection'
+McPhoto.bisect_step        = 1.E-4         # Bisection step length for intersection tests
+McPhoto.seed               = 0             # Seed for RNG
+McPhoto.bc_x_low           = outflow       # Boundary condition. 'outflow', 'symmetry', or 'wall'
+McPhoto.bc_x_high          = outflow       # Boundary condition
+McPhoto.bc_y_low           = outflow       # Boundary condition
+McPhoto.bc_y_high          = outflow       # Boundary condition
+McPhoto.bc_z_low           = outflow       # Boundary condition
+McPhoto.bc_z_high          = outflow       # Boundary condition
+McPhoto.photon_generation  = deterministic # Volumetric source term. 'deterministic' or 'stochastic'
+McPhoto.source_type        = number        # 'number'      = Source term contains the number of photons produced
+                                           # 'volume'      = Source terms contains the number of photons produced per unit volume
+                                           # 'volume_rate' = Source terms contains the volumetric rate
+                                           # 'rate'        = Source terms contains the rate
+McPhoto.deposition         = cic           # 'ngp'  = nearest grid point
+McPhoto.deposition_cf      = halo          # Coarse-fine deposition. Must be interp or halo
+                                           # 'num'  = # of photons per cell
+                                           # 'cic'  = cloud-in-cell
+                                           # 'tsc'  = triangle-shaped-cloud
+                                           # 'w4'   = 3rd order interpolation
+
+# ====================================================================================================
+# GeoCoarsener class options
+# ====================================================================================================
+GeoCoarsener.num_boxes   = 1            # Number of coarsening boxes (0 = don't coarsen)
+GeoCoarsener.box1_lo     = -1.0 1.0 1E-3  # Remove irregular cell tags 
+GeoCoarsener.box1_hi     = 1.0 1.0 1.0  # between these two corners
+GeoCoarsener.box1_lvl    = 2            # up to this level
+GeoCoarsener.box1_inv    = false        # Remove except inside box (true)
+
+
+
+# ====================================================================================================
+# DiskProfiledPlane class options
+# ====================================================================================================
+
+DiskProfiledPlane.use_electrode         = true                    # Turn on/off electrode
+DiskProfiledPlane.use_dielectric        = true                    # Turn on/off dielectric
+
+DiskProfiledPlane.wheel_live            = false                    # Live electrode or not
+DiskProfiledPlane.wheel_radius          = 5E-2                    # Wheel radius
+DiskProfiledPlane.wheel_center          = -4E-2 6.25E-2 0             # Wheel center
+DiskProfiledPlane.wheel_curvature       = 500E-6                  # Wheel curvature (thickness)
+DiskProfiledPlane.wheel_stem_radius     = -1.0                    # Wheel stem radius (< 0 => turn off this part)
+DiskProfiledPlane.wheel_smooth          = 1E-3                    # Smoothing distance for CSG union
+DiskProfiledPlane.wheel_extra_thickness = 0.0                     # Extra wheel thickness
+
+DiskProfiledPlane.wheel2_live            = false                    # Live electrode or not
+DiskProfiledPlane.wheel2_radius          = 0.85E-2                    # Wheel radius
+DiskProfiledPlane.wheel2_center          = -4E-2 0.65E-2 0             # Wheel center
+DiskProfiledPlane.wheel2_curvature       = 1500E-6                  # Wheel curvature (thickness)
+DiskProfiledPlane.wheel2_stem_radius     = -1.0                    # Wheel stem radius (< 0 => turn off this part)
+DiskProfiledPlane.wheel2_smooth          = 1E-3                    # Smoothing distance for CSG union
+DiskProfiledPlane.wheel2_extra_thickness = 0.0                     # Extra wheel thickness
+
+DiskProfiledPlane.wheel3_live            = true                    # Live electrode or not
+DiskProfiledPlane.wheel3_radius          = 0.75E-2                    # Wheel radius
+DiskProfiledPlane.wheel3_center          = 4.35E-2 1.9E-2 0             # Wheel center
+DiskProfiledPlane.wheel3_curvature       = 7000E-6                  # Wheel curvature (thickness)
+DiskProfiledPlane.wheel3_stem_radius     = -1.0                    # Wheel stem radius (< 0 => turn off this part)
+DiskProfiledPlane.wheel3_smooth          = 1E-3                    # Smoothing distance for CSG union
+DiskProfiledPlane.wheel3_extra_thickness = 0.0                     # Extra wheel thickness
+
+
+DiskProfiledPlane.box_dimensions        = 9.3000123E-2 0.020012 1 # Box dimensions
+DiskProfiledPlane.box_translate         = 0E-3 11.0123E-3 0           # Box translation
+DiskProfiledPlane.box_permittivity      = 4                     # Dielectric box permittivity
+DiskProfiledPlane.box_curvature         = 100E-6                   # Corner curvatures
+
+
+DiskProfiledPlane.profile_type          = square                # Profile type. 'square', 'sphere', 'cylinder_d' with d = 'x/y/z'
+DiskProfiledPlane.profile_translate_lo  = 0.0000123E-3 0.0000123E-3 0        # Profile translation
+DiskProfiledPlane.profile_translate_hi  = 0.0000123E-3 0.0000123E-3 0        # Profile translation
+DiskProfiledPlane.profile_repetition_lo = 4 0 0                  # Repetition pattern in low coordinate direction
+DiskProfiledPlane.profile_repetition_hi = 12 0 0                  # Repetition pattern in high coordinate direction
+DiskProfiledPlane.reflect_lo            = false 	            # mirror profile about y axis at x = 0
+DiskProfiledPlane.reflect_hi            = false 	            # mirror profile about y axis at x = 0
+DiskProfiledPlane.profile_period        = 2.500123E-3 1 1                # Repetition period SQUARE
+
+DiskProfiledPlane.square_dimensions     = 1999E-6 1999E-6 10       # Dimensions for squares/square channels
+DiskProfiledPlane.lshape_dimensions     = 799E-6 999E-6 10     # Main dimensions for l_shape channels
+DiskProfiledPlane.lshape_cut_angle    	= 0.185353              # in radians (cut plane from upper corner)
+DiskProfiledPlane.sphere_radius         = 300E-6                    # Radius for sphere profiles
+DiskProfiledPlane.cylinder_radius       = 1E-3                    # Radius for cylinder profiles
+
+DiskProfiledPlane.golfpeg_radius        = 299E-6                    # Golfpeg top ball radius
+DiskProfiledPlane.golfpeg_length	    = 999E-6                    # golfpeg length
+DiskProfiledPlane.golfpeg_width 	    = 149E-6                    # golfpeg width
+DiskProfiledPlane.golfpeg_curvature1         = 199E-6                   # Peg upper curvature (where it meets the ball)
+DiskProfiledPlane.golfpeg_curvature2         = 299E-6                   # Peg lower curvature (where it meets the box)
+
+
+# ==================================================================================================== 
+# ItoKMCGodunovStepper class options
+# ====================================================================================================
+ItoKMCGodunovStepper.checkpoint_particles                  = true           # If true, regrid on restart is supported (otherwise it's not)
+ItoKMCGodunovStepper.verbosity                             = 1             # Verbosity
+ItoKMCGodunovStepper.abort_on_failure                      = false           # Abort on Poisson solver failure or not
+ItoKMCGodunovStepper.redistribute_cdr                      = true           # Turn on/off reactive redistribution
+ItoKMCGodunovStepper.profile                               = false          # Turn on/off run-time profiling
+ItoKMCGodunovStepper.plt_vars                              = none           # 'conductivity', 'current_density', 'particles_per_patch'
+ItoKMCGodunovStepper.dual_grid                             = false           # Turn on/off dual-grid functionality
+ItoKMCGodunovStepper.load_balance_fluid                    = false          # Turn on/off fluid realm load balancing. 
+ItoKMCGodunovStepper.load_balance_particles                = false           # Turn on/off particle load balancing
+ItoKMCGodunovStepper.load_indices                          = -1             # Which particle containers to use for load balancing (-1 => all)
+ItoKMCGodunovStepper.load_per_cell                         = 1.0            # Default load per grid cell.
+ItoKMCGodunovStepper.box_sorting                           = morton         # Box sorting when load balancing
+ItoKMCGodunovStepper.particles_per_cell                    = 32             # Max computational particles per cell
+ItoKMCGodunovStepper.merge_interval                        = 1              # Time steps between superparticle merging
+ItoKMCGodunovStepper.regrid_superparticles                 = false          # Make superparticles during regrids
+ItoKMCGodunovStepper.min_particle_advection_cfl            = 0.0            # Advective time step CFL restriction
+ItoKMCGodunovStepper.max_particle_advection_cfl            = 1.E99            # Advective time step CFL restriction
+ItoKMCGodunovStepper.min_particle_diffusion_cfl            = 0.0            # Diffusive time step CFL restriction
+ItoKMCGodunovStepper.max_particle_diffusion_cfl            = 1.E99          # Diffusive time step CFL restriction
+ItoKMCGodunovStepper.min_particle_advection_diffusion_cfl  = 0.0            # Advection-diffusion time step CFL restriction
+ItoKMCGodunovStepper.max_particle_advection_diffusion_cfl  = 1.E99          # Advection-diffusion time step CFL restriction
+ItoKMCGodunovStepper.fluid_advection_diffusion_cfl         = 0.5            # Advection-diffusion time step CFL restriction
+ItoKMCGodunovStepper.relax_dt_factor                       = 100.0          # Relaxation time step restriction. 
+ItoKMCGodunovStepper.min_dt                                = 8E-12            # Minimum permitted time step
+ItoKMCGodunovStepper.max_dt                                = 8E-12          # Maximum permitted time step
+ItoKMCGodunovStepper.max_growth_dt                         = 1.E99          # Maximum permitted time step increase (dt * factor)
+ItoKMCGodunovStepper.max_shrink_dt                         = 1.E99          # Maximum permissible time step reduction (dt/factor)
+ItoKMCGodunovStepper.extend_conductivity                   = true           # Permit particles to live outside the EB to avoid bad gradients near EB
+ItoKMCGodunovStepper.smooth_conductivity                   = false          # Use bilinear smoothing on the conductivity.
+ItoKMCGodunovStepper.eb_tolerance                          = 0.0            # EB intersection test tolerance
+ItoKMCGodunovStepper.algorithm                             = euler_maruyama # Integration algorithm. 'euler_maruyama' or 'trapezoidal'
+
+
+# ====================================================================================================
+# ItoKMCJSON class options
+# ====================================================================================================
+ItoKMCJSON.verbose            = false                   ## Turn on/off verbosity
+ItoKMCJSON.debug              = true                    ## Turn on/off debugging
+ItoKMCJSON.chemistry_file     = chemistry.json ## Chemistry file
+
+# For controlling the time step
+ItoKMCJSON.dX                 = 2.0                     ## Maximum relative change Xnew/Xold during one time step.
+
+# Kinetic Monte Carlo solver settings. 
+ItoKMCJSON.max_new_particles  = 16                      ## Maximum number of computational particles to produce in reaction step
+ItoKMCJSON.max_new_photons    = 32                     ## Maximum number of computational photons to produce in reaction step	
+ItoKMCJSON.Ncrit              = 5                       ## How many firings away from a Negative particle number?
+ItoKMCJSON.prop_eps           = 1.E99                   ## Maximum relative change in propensity function
+ItoKMCJSON.NSSA               = 10                      ## How many SSA steps to run when tau-leaping is inefficient
+ItoKMCJSON.SSAlim             = 1.0                     ## When to enter SSA instead of tau-leaping
+ItoKMCJSON.algorithm          = tau_plain         ## 'ssa', 'tau_plain', 'tau_midpoint', 'hybrid_plain', or 'hybrid_midpoint'
+
+# ====================================================================================================
+# ITO_PLASMA_STREAMER_TAGGER CLASS OPTIONS
+# ====================================================================================================
+ItoKMCStreamerTagger.verbosity         = 1           # Verbosity
+ItoKMCStreamerTagger.plot              = false        # Turn on/off plotting of input fields.
+ItoKMCStreamerTagger.num_tag_boxes     = 0            # Number of allowed tag boxes (0 = tags allowe everywhere)
+ItoKMCStreamerTagger.tag_box1_lo       = 0.0 0.0 0.0  # Only allow tags that fall between
+ItoKMCStreamerTagger.tag_box1_hi       = 0.0 0.0 0.0  # these two corners
+ItoKMCStreamerTagger.buffer            = 8            # Grow tagged cells
+
+ItoKMCStreamerTagger.refine_curvature  = 1.E99        # Curvature refinement
+ItoKMCStreamerTagger.coarsen_curvature = 1.E99        # Curvature coarsening	
+ItoKMCStreamerTagger.refine_alpha      = 0.5          # Set alpha refinement. Lower  => More mesh
+ItoKMCStreamerTagger.coarsen_alpha     = 0.1         # Set alpha coarsening. Higher => Less mesh
+ItoKMCStreamerTagger.max_coarsen_lvl   = 10            # Set max coarsening depth
+
+ItoKMCGodunovStepper.plot_particles=false
