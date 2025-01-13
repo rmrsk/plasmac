@@ -16,6 +16,8 @@ RodNeedleDisk.rod_small_radius     = 0.1        # Radius for small-radius part o
 RodNeedleDisk.rod_big_radius       = 0.2        # Radius for large-radius part of rod
 RodNeedleDisk.rod_smooth           = 0.1        # Transition length between small/big radius parts
 RodNeedleDisk.rod_needle_smooth    = 0.00       # Transition length between needle and actual rod
+RodNeedleDisk.rod_plateau	   = false	# Turn on/off plateau between the wide and narrow part of the rod
+RodNeedleDisk.rod_plateau_radius   = 0.017	# Radius of the plateau between the small-radius and the large-radius part of the rod
 
 RodNeedleDisk.needle_length        = 0.4        # Needle length (from some origin)
 RodNeedleDisk.needle_radius        = 0.025      # Needle radius
